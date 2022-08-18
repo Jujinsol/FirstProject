@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class GameScene : MonoBehaviour
 {
-    private GameObject _prefab;
-    GameObject _player;
-
     void Start()
     {
         Init();
@@ -14,7 +11,10 @@ public class GameScene : MonoBehaviour
 
     void Init()
     {
-        _prefab = Resources.Load<GameObject>("Prefabs/Player");
-        _player = Instantiate(_prefab);
+        GameObject _playerPrefab = Resources.Load<GameObject>("Prefabs/Player");
+        GameObject _player = Instantiate(_playerPrefab);
+
+        GameObject _OpossumPrefab = Resources.Load<GameObject>("Prefabs/Opossum");
+        GameObject _opossum = Instantiate(_OpossumPrefab);
     }
 }

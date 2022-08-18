@@ -12,4 +12,10 @@ public class Define : MonoBehaviour
         Left,
         Right,
     }
+
+    public enum FinalDir
+    {
+        Left,
+        Right,
+    }
 }
