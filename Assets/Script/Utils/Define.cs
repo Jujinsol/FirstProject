@@ -17,5 +17,6 @@ public class Define : MonoBehaviour
     {
         Left,
         Right,
+        None,
     }
 }

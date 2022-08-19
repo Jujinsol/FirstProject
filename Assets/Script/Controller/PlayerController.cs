@@ -4,13 +4,16 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using static Define;
 
-public class PlayerController : CreatureController
+public class PlayerController : MonoBehaviour
 {
     float _speed = 7.0f;
     float _jumpPower = 10.0f;
     bool _isGround;
+    int _hp = 3;
 
+    Animator _animator;
     FinalDir _finalDir;
+    MoveDir _dir;
 
     public MoveDir Dir
     {
@@ -69,18 +72,22 @@ public class PlayerController : CreatureController
         Moving();
     }
 
-    protected override void Init() 
+    protected void Init() 
     {
         Vector3 pos = new Vector3(0, -2, 0);
         transform.position = pos;
-        Dir = MoveDir.None;
+        Dir = MoveDir.Right;
     }
 
     void OnCollisionEnter2D(Collision2D collision) //충돌 감지
     {
         if (collision.gameObject.tag == "Ground")
             _isGround = true;
-        Dir = MoveDir.None;
+        else if (collision.gameObject.tag == "Monster")
+        {
+            _hp--;
+            Attack();
+        }
     }
 
     protected virtual void Moving()
@@ -89,11 +96,13 @@ public class PlayerController : CreatureController
         {
             Dir = MoveDir.Left;
             transform.position += Vector3.left * Time.deltaTime * _speed;
+            CheckJump();
         }
         else if (Input.GetKey(KeyCode.D))
         {
             Dir = MoveDir.Right;
             transform.position += Vector3.right * Time.deltaTime * _speed;
+            CheckJump();
         }
         else if (Input.GetKeyDown(KeyCode.Space) && _isGround)
         {
@@ -104,6 +113,39 @@ public class PlayerController : CreatureController
         else
         {
             Dir = MoveDir.None;
+        }
+    }
+
+    protected void CheckJump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && _isGround)
+        {
+            _isGround = false;
+            Dir = MoveDir.Up;
+            GetComponent<Rigidbody2D>().AddForce(Vector2.up * _jumpPower, ForceMode2D.Impulse);
+        }
+        else
+            return;
+    }
+
+    void Attack()
+    {
+        if (_hp <= 0)
+            _hp = 0;
+        if (_hp == 2)
+        {
+            GameObject HP3 = GameObject.Find("HP (2)");
+            Destroy(HP3);
+        }
+        else if (_hp == 1)
+        {
+            GameObject HP2 = GameObject.Find("HP (1)");
+            Destroy(HP2);
+        }
+        else if (_hp == 0)
+        {
+            GameObject HP1 = GameObject.Find("HP");
+            Destroy(HP1);
         }
     }
 }
