@@ -3,77 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class OpossumController : MonoBehaviour
+public class OpossumController : MonsterController
 {
-    float _speed = 3.0f;
-    int _changeDir;
+    Vector3 pos = new Vector3(11, -2.2f, 0);
+    public float _speed;
 
-    Animator _animator;
-    FinalDir _finalDir;
-    MoveDir _dir;
-
-    public FinalDir FinalDir
+    public override float Speed
     {
-        get { return _finalDir; }
-        set
-        {
-            if (_finalDir == value)
-                return;
-
-            switch (value)
-            {
-                case FinalDir.Left:
-                    _animator.Play("WALK_LEFT");
-                    transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-                    break;
-                case FinalDir.Right:
-                    _animator.Play("WALK_LEFT");
-                    transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
-                    break;
-            }
-            _finalDir = value;
-        }
+        get { return _speed; }
+        set { _speed = value; }
     }
 
-    void Start()
+    protected override FinalDir FinalDir
     {
-        _animator = GetComponent<Animator>();
-        Init();
+        get => base.FinalDir;
+        set => base.FinalDir = value;
     }
 
-    void FixedUpdate()
+    protected override void Init()
     {
-        Move();
-    }
-
-    public void Init()
-    {
-        Vector3 pos = new Vector3(11, -2.2f, 0);
         transform.position = pos;
-        StartCoroutine("ChangeDir");
-        FinalDir = FinalDir.Left;
+        _speed = 3.0f;
+        base.Init();
+        StartCoroutine("FromRight", 6.5f);
     }
 
-    void Move()
+    protected override void Move()
     {
-        if (_changeDir == 0)
-        {
-            transform.position += Vector3.right * _speed * Time.deltaTime;
-            FinalDir = FinalDir.Right;
-        }
-        else if (_changeDir == 1)
-        {
-            transform.position += Vector3.left * _speed * Time.deltaTime;
-            FinalDir = FinalDir.Left;
-        }
+        base.Move();
     }
 
-    IEnumerator ChangeDir()
+    protected override IEnumerator FromRight(float time)
     {
-        _changeDir = 1;
-        yield return new WaitForSeconds(6.5f);
-        _changeDir = 0;
-        yield return new WaitForSeconds(6.5f);
-        StartCoroutine("ChangeDir");
+        return base.FromRight(time);
     }
 }
