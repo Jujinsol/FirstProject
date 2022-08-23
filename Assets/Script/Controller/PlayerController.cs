@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using static Define;
 
@@ -9,6 +10,7 @@ public class PlayerController : MonoBehaviour
     float _speed = 7.0f;
     float _jumpPower = 10.0f;
     bool _isGround;
+    bool _isDead = false;
     int _hp = 3;
 
     Animator _animator;
@@ -133,19 +135,21 @@ public class PlayerController : MonoBehaviour
         if (_hp <= 0)
             _hp = 0;
         if (_hp == 2)
-        {
-            GameObject HP3 = GameObject.Find("HP (2)");
-            Destroy(HP3);
-        }
+            GameManager.Destroy("HP (2)");
         else if (_hp == 1)
-        {
-            GameObject HP2 = GameObject.Find("HP (1)");
-            Destroy(HP2);
-        }
+            GameManager.Destroy("HP (1)");
         else if (_hp == 0)
         {
-            GameObject HP1 = GameObject.Find("HP");
-            Destroy(HP1);
+            GameManager.Destroy("HP");
+            OnDead();
         }
+    }
+
+    void OnDead()
+    {
+        Time.timeScale = 0f;
+
+        GameManager.InstantiateUI("YOUDIED");
+        _hp = 3;
     }
 }
